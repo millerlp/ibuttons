@@ -57,6 +57,7 @@ fnameID = scan(file = '', what = double(), n = 1)
 loop = TRUE
 while(loop) {
 	cat('Current file number: ', fnameID, '\n') # Show current number
+	Sys.sleep(1) # pause for 1 second
 	# Get current time to insert in filename so we don't overwrite old data
 	currTime = strftime(Sys.time(), format = "%Y%m%d_%H%M")
 	# Assemble filename
@@ -128,11 +129,13 @@ while(loop) {
 	cat(temp[18], '\n')
 	cat(temp[20], '\n')
 	cat('\a\n----------------------------------------------------\n')
-	cat('Swap in next iButton and press any key to download.\n') 
+	cat('Swap in next iButton and press enter key to download.\n') 
 	cat('Press r to retry this number.\n')
 	cat('Press s to skip next number.\n')
 	cat('Press q to quit.\n')
-	user.input = scan(file = '', what = character(), n = 1)
+	cat('Previous file number: ', fnameID, '\n')
+	cat('Next file number: ', fnameID + 1, '\n')
+	user.input = scan(file = '', what = character(), n = 1, quiet = TRUE)
 	if (length(user.input) > 0) {
 		if (user.input == 'q') loop = FALSE
 		else if (user.input == 'r') { # Retry reading current ibutton
@@ -141,10 +144,41 @@ while(loop) {
 		}
 		else if (user.input == 's') { # Skip next number because ibutton is 
 									 # missing
-			loop = TRUE				# continue running
-			fnameID = fnameID + 2 	# skip next number
+			fnameID = fnameID + 2	# increment number by 2 to skip ahead
+			skip.loop = TRUE # intialize "skip.loop" boolean
+			# Enter into a while loop where user can increment or decrement
+			# next file number as needed. A blank entry (hitting enter) will
+			# kill the loop and use the current fnameID number
+			while(skip.loop) {
+				cat('Next file number: ', fnameID, '\n') # show user new number
+				cat('Press enter to accept next file number.\n')
+				cat('Press b to move back one value.\n')
+				cat('Press s to skip forward one more value.\n')
+				user.input = scan(file = '', what = character(), n = 1, 
+						quiet = TRUE)
+				if (length(user.input) > 0) {
+					if (user.input == 'b') {
+						fnameID = fnameID - 1 # decrement fnameID by 1
+						skip.loop = TRUE # repeat loop to show current value
+					} else if (user.input == 's') {
+						fnameID = fnameID + 1 # increment fnameID by 1
+						skip.loop = TRUE # repeat loop to show current value
+					}
+					} else skip.loop = FALSE # stop while loop
+				}
+				
+				cat('Load next iButton to be read and hit enter when ready.\n')
+				# Pause here and wait for user to hit enter to acknowledge that
+				# they are ready to proceed.
+				user.input = scan(file = '', what = character(), n = 1, 
+						quiet = TRUE)
+				loop = TRUE				# continue running main while loop
+			}
+			
+			
 		}
-	} else {
+	 else { # If user hits enter or something besides r,s,q, just continue
+		 	# looping in the normal sequence. 
 		loop = TRUE	# no user input, continue on to next number in sequence
 		fnameID = fnameID + 1 # Increment the file ID to next value (1,2,3 etc)
 	}
