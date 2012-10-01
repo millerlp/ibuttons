@@ -56,6 +56,7 @@ cat('Enter starting file number: \n')
 fnameID = scan(file = '', what = double(), n = 1)
 loop = TRUE
 while(loop) {
+	cat('Current file number: ', fnameID, '\n') # Show current number
 	# Get current time to insert in filename so we don't overwrite old data
 	currTime = strftime(Sys.time(), format = "%Y%m%d_%H%M")
 	# Assemble filename
@@ -83,45 +84,70 @@ while(loop) {
 	log.end = grep('Debug Dump', x) # Find where the log data ends (roughly)
 	log.end = log.end - 2 # change value to last line of log data
 	# Check if there were any logged temperature data
-	if (!(log.end - log.start < 0)) {
-		temps = x[log.start:log.end] # extract log data, still as characters
-		
-		# Convert time stamps to POSIX object
-		times = as.POSIXct(strptime(substr(temps,1,17), 
-						format = '%m/%d/%Y %H:%M'))
-		temp.data = data.frame(Time = times) # stick into a new data frame
-		# convert temps to numeric and insert into temp.data
-		temp.data$TempC = as.numeric(substr(temps,20,26))
-		# Insert column with iButton's unique serial number
-		temp.data$Serial.number = serialnum
-		# Insert new column with ibutton ID from file name
-		temp.data$ID = fnameID
-		# Output temperature data to console
-		cat('Temperature summary data: \n')
-		sprintf('%s', temp.data)
-		print(temp.data)
-		flush.console()
-		# Output temperature data to a comma-separated-value file for easy
-		# reading in Excel or R. 
-		# Start by assembling new filename, sticking output file in the 2nd
-		# directory created at the start of the script.
-		outputfile = paste(dir.name2,'\\',fnameID,'_',currTime,'.csv', sep = '')
-		# Write temp.data to a comma-separated-value file
-		write.csv(temp.data, file = outputfile, quote = FALSE, 
-			row.names = FALSE)		
-	} else {
+	# If there are data, they are saved in a csv file and also printed to the
+	# console for your perusal.
+	# Start by checking that log.start and log.end contain values
+	if (length(log.start) > 0 & length(log.end) > 0) {
+		# if true, then check that log.end is different than log.start
+		if (!(log.end - log.start < 0)) {
+			temps = x[log.start:log.end] # extract log data, still as characters
+			
+			# Convert time stamps to POSIX object
+			times = as.POSIXct(strptime(substr(temps,1,17), 
+							format = '%m/%d/%Y %H:%M'))
+			temp.data = data.frame(Time = times) # stick into a new data frame
+			# convert temps to numeric and insert into temp.data
+			temp.data$TempC = as.numeric(substr(temps,20,26))
+			# Insert column with iButton's unique serial number
+			temp.data$Serial.number = serialnum
+			# Insert new column with ibutton ID from file name
+			temp.data$ID = fnameID
+			# Output temperature data to console
+			cat('Temperature summary data: \n')
+			sprintf('%s', temp.data)
+			print(temp.data)
+			flush.console()
+			# Output temperature data to a comma-separated-value file for easy
+			# reading in Excel or R. 
+			# Start by assembling new filename, sticking output file in the 2nd
+			# directory created at the start of the script.
+			outputfile = paste(dir.name2,'\\',fnameID,'_',currTime,'.csv', sep = '')
+			# Write temp.data to a comma-separated-value file
+			write.csv(temp.data, file = outputfile, quote = FALSE, 
+					row.names = FALSE)	
+		} else { # no data downloaded, notify user
+			cat('\n\n*****No temperature data*****\a\n\n')
+		}
+	} else { # read failed, probably due to missing or dead ibutton
 		cat('\n\n*****No temperature data*****\a\n\n')
 	}
+	# clear log.end and log.start variables if they are present
+	if (exists("log.start")) rm(log.start)
+	if (exists("log.end")) rm(log.end)
 	
 	cat(temp[18], '\n')
 	cat(temp[20], '\n')
-	cat('\a\n---------------------\n')
-	cat('Swap in next iButton and press any key to download. Press q to quit.\n')
+	cat('\a\n----------------------------------------------------\n')
+	cat('Swap in next iButton and press any key to download.\n') 
+	cat('Press r to retry this number.\n')
+	cat('Press s to skip next number.\n')
+	cat('Press q to quit.\n')
 	user.input = scan(file = '', what = character(), n = 1)
 	if (length(user.input) > 0) {
 		if (user.input == 'q') loop = FALSE
-	} else loop = TRUE
-	fnameID = fnameID + 1 # Increment the file ID to the next value (1,2,3 etc)
+		else if (user.input == 'r') { # Retry reading current ibutton
+			loop = TRUE				# continue running
+			fnameID = fnameID 		# do not increment name on retry
+		}
+		else if (user.input == 's') { # Skip next number because ibutton is 
+									 # missing
+			loop = TRUE				# continue running
+			fnameID = fnameID + 2 	# skip next number
+		}
+	} else {
+		loop = TRUE	# no user input, continue on to next number in sequence
+		fnameID = fnameID + 1 # Increment the file ID to next value (1,2,3 etc)
+	}
 }
 
 cat('Finished\n')

@@ -28,8 +28,13 @@ setwd('D:/R/ibuttons') # Alter this for your needs, thermoms.exe must be in the
 # drivers work and that you can communicate with iButtons successfully through 
 # the USB adapter. You can download this app here: 
 # http://www.maxim-ic.com/products/ibutton/software/1wire/OneWireViewer.cfm
-
-
+cat('*************************************************************\n\a')
+cat('************RESET COMPUTER CLOCK TO STANDARD TIME************\n')
+Sys.sleep(2)
+cat('\a')
+Sys.sleep(2)
+cat('************SERIOUSLY, RESET YOUR CLOCK TO STANDARD TIME*********\a\n')
+cat('*****************************************************************\n')
 cat('Enter a desired mission start time as YYYY-MM-DD HH:MM\n')
 cat('Or else enter 0 for immediate start. Delay must be less than 45.5 days.\n')
 time.delay = scan(file = '', what = character(), n = 1, sep = ',')
