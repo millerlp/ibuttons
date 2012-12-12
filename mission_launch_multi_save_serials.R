@@ -91,6 +91,7 @@ if (launch) { # only do this part if launch == TRUE
 	# Get current time to insert in filename so we don't overwrite old data
 	currTime = strftime(Sys.time(), format = "%Y%m%d_%H%M")
 	ser.file = paste('Launch_serials_',currTime,'.csv',sep = '')
+	num = 1 # counter to keep track of number of launched iButtons
 	# This while loop will repeat continuously to launch multiple iButtons.
 	# The same parameters will be used to launch every iButton, except that the 
 	# start delay (if >0) will automatically adjust as time elapses so that each
@@ -160,7 +161,7 @@ if (launch) { # only do this part if launch == TRUE
 		if (out[7] == 'Thermochron not present on 1-Wire') {
 			cat('******************************************\n')
 			cat(out[7],'\n')
-			cat('******************************************\n\a')
+			cat('******************************************\n')
 		} else { # if out[7] is blank, a mission was probably uploaded
 			for (i in 73:90) { # Display read-back from mission upload
 				cat(out[i],'\n')
@@ -181,7 +182,7 @@ if (launch) { # only do this part if launch == TRUE
 					# If delay value returned by iButton doesn't match the 
 					# programmed delay, warn the user and re-launch the mission
 					cat('*****************************************\n')
-					cat('****Launch did not work, re-launching****\a\n')
+					cat('****Launch did not work, re-launching****\n')
 					cat('*****************************************\n')
 					out = system('thermoms.exe ds2490-0', intern = TRUE,
 							wait = TRUE, input = mission.params)
@@ -229,14 +230,16 @@ if (launch) { # only do this part if launch == TRUE
 					# new line.
 					write.table(ser.num,ser.file, append = TRUE, quote = FALSE,
 							row.names = FALSE, col.names = FALSE)
-					cat('\n----------Success---------\n')
+					cat('\n----------Success---------\a\n')
+					cat('Launch number ', num,'\n')
+					num = num + 1 # increment number counter
 					retry = 3 # This kills the retry while loop
 				}
 			} # End of retry while-loop
 		} # End of if (out[7]... if-else statements
 
 		# Ask the user to load the next iButton or quit.
-		cat('Swap next iButton and press Enter to launch. Enter q to quit.\a\n')
+		cat('Swap next iButton and press Enter to launch. Enter q to quit.\n')
 		user.input = scan(file = '', what = character(), n = 1)
 		if (length(user.input) > 0) { # Allows user to not type anything
 			if (user.input == 'q') loop = FALSE # Kills loop
@@ -244,4 +247,4 @@ if (launch) { # only do this part if launch == TRUE
 	} # End of 'loop' while-loop
 } # End of 'launch' if-statement
 
-cat('Finished \a\n')
+cat('Finished\n')
