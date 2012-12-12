@@ -12,6 +12,9 @@
 # data files are stored in a directory with today's date on it, while the parsed 
 # csv files go in a 2nd directory.
 
+# This version also lets the user define a time cut-off after which logged data
+# should be discarded (if you harvested iButtons before they were full).
+
 # The thermodl.exe file was originally downloaded as part of the Maxim iButton 
 # 1-Wire Public Domain Kit. 
 # There are several versions of the Kit available, including
@@ -54,6 +57,14 @@ if (is.na(file.info(dir.name2)$isdir)) {
 
 cat('Enter starting file number: \n')
 fnameID = scan(file = '', what = double(), n = 1)
+cat('Enter cutoff time and date (YYYY-MM-DD HH:MM)\n')
+cat('Leave blank to keep all data points\n')
+stoptime = scan(file = '', what = character(), n = 1, sep = ",")
+if (length(stoptime) > 0){
+	stoptime = as.POSIXct(stoptime) # All data points after this time will be 
+							 		# dropped, since they are probably bogus
+}
+
 loop = TRUE
 while(loop) {
 	cat('Current file number: ', fnameID, '\n') # Show current number
@@ -103,6 +114,11 @@ while(loop) {
 			temp.data$Serial.number = serialnum
 			# Insert new column with ibutton ID from file name
 			temp.data$ID = fnameID
+			
+			# Check to see if user specified a cutoff time, discard extra data
+			if (length(stoptime) > 0) {
+				temp.data = temp.data[temp.data$Time <= stoptime, ]
+			}
 			# Output temperature data to console
 			cat('Temperature summary data: \n')
 			sprintf('%s', temp.data)
