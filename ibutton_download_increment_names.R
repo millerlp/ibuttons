@@ -14,6 +14,9 @@
 
 # This version also lets the user define a time cut-off after which logged data
 # should be discarded (if you harvested iButtons before they were full).
+# A system alert sound will notify the user if the download fails, otherwise a
+# sample of data from the start and end of the mission will be displayed on the
+# console.
 
 # The thermodl.exe file was originally downloaded as part of the Maxim iButton 
 # 1-Wire Public Domain Kit. 
@@ -36,7 +39,7 @@
 # http://www.maxim-ic.com/products/ibutton/software/1wire/OneWireViewer.cfm
 
 
-setwd('D:/R/ibuttons')
+setwd('D:/R/ibuttons') # A copy of thermodl.exe should be in this directory
 
 cur.date = Sys.Date() # Get current date
 # Assemble a directory name to store downloaded data into
@@ -121,14 +124,17 @@ while(loop) {
 			}
 			# Output temperature data to console
 			cat('Temperature summary data: \n')
-			sprintf('%s', temp.data)
-			print(temp.data)
+			print(head(temp.data,3)) # Print first 3 lines of data
+			cat('.\n.\n.\n') # Print some spaces
+			print(tail(temp.data,3)) # Print last 3 lines of data
+#			print(temp.data) # Uncomment to print all data
 			flush.console()
 			# Output temperature data to a comma-separated-value file for easy
 			# reading in Excel or R. 
 			# Start by assembling new filename, sticking output file in the 2nd
 			# directory created at the start of the script.
-			outputfile = paste(dir.name2,'\\',fnameID,'_',currTime,'.csv', sep = '')
+			outputfile = paste(dir.name2,'\\',fnameID,'_',currTime,'.csv', 
+					sep = '')
 			# Write temp.data to a comma-separated-value file
 			write.csv(temp.data, file = outputfile, quote = FALSE, 
 					row.names = FALSE)	
@@ -144,7 +150,7 @@ while(loop) {
 	
 	cat(temp[18], '\n')
 	cat(temp[20], '\n')
-	cat('\a\n----------------------------------------------------\n')
+	cat('\n----------------------------------------------------\n')
 	cat('Swap in next iButton and press enter key to download.\n') 
 	cat('Press r to retry this number.\n')
 	cat('Press s to skip next number.\n')
