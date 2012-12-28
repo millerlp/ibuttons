@@ -10,6 +10,10 @@
 setwd('D:/R/ibuttons') # Alter this for your needs, thermoms.exe must be in the
 # current R working directory.
 
+mem.length = 2048 # Number of data points the ibutton can hold. This is just 
+# used to calculate when the last sample will be taken, so you can write it 
+# down somewhere. 
+
 # The thermoms.exe file was originally downloaded as part of the Maxim iButton 
 # 1-Wire Public Domain Kit. 
 # There are several versions of the Kit available, including
@@ -87,6 +91,13 @@ if (launch) { # only do this part if launch == TRUE
 	freq = scan(file = '', what = numeric(), n = 1)
 	freq = as.character(freq) # convert to character
 	loop = TRUE # Set loop continuation variable to TRUE initially
+	
+	################
+	# Calculate time of last sample
+	ftime = time.delay + ((as.numeric(freq) * (mem.length - 1)) * 60)
+	cat('Time of final sample: \n')
+	cat(ftime,'\n*******************\n')
+	################
 	
 	# Get current time to insert in filename so we don't overwrite old data
 	currTime = strftime(Sys.time(), format = "%Y%m%d_%H%M")
@@ -246,5 +257,6 @@ if (launch) { # only do this part if launch == TRUE
 		} else {loop = TRUE}	
 	} # End of 'loop' while-loop
 } # End of 'launch' if-statement
-
+cat('Time of final sample: \n')
+cat(ftime,'\n*******************\n')
 cat('Finished\n')
