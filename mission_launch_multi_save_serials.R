@@ -96,7 +96,7 @@ if (launch) { # only do this part if launch == TRUE
 	# Calculate time of last sample
 	ftime = time.delay + ((as.numeric(freq) * (mem.length - 1)) * 60)
 	cat('Time of final sample: \n')
-	cat(ftime,'\n*******************\n')
+	cat(strftime(ftime),'\n*******************\n')
 	################
 	
 	# Get current time to insert in filename so we don't overwrite old data
@@ -258,5 +258,5 @@ if (launch) { # only do this part if launch == TRUE
 	} # End of 'loop' while-loop
 } # End of 'launch' if-statement
 cat('Time of final sample: \n')
-cat(ftime,'\n*******************\n')
+cat(strftime(ftime),'\n*******************\n')
 cat('Finished\n')
