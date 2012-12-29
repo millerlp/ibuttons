@@ -1,6 +1,6 @@
 # Filename: ibutton_download_increment_names.R
 # 
-# Author: Luke Miller  Jul 11, 2012
+# Author: Luke Miller  Dec 28, 2012
 ###############################################################################
 # This script will allow the user to download iButtons, giving a numeric name
 # to each file that increments with each new download. It will parse the raw 
