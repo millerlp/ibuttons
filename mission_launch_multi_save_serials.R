@@ -102,7 +102,22 @@ if (launch) { # only do this part if launch == TRUE
 	# Get current time to insert in filename so we don't overwrite old data
 	currTime = strftime(Sys.time(), format = "%Y%m%d_%H%M")
 	ser.file = paste('Launch_serials_',currTime,'.csv',sep = '')
-	num = 1 # counter to keep track of number of launched iButtons
+	
+	# The script will keep a tally of how many ibuttons have been
+	# launched during this run. You can set a different starting 
+	# number than 1 here.
+	cat('Enter starting ibutton number (just to keep track):\n')
+	num = scan(file="", what = numeric(), n = 1)
+	if (length(num) == 0){
+		num = 1 # If user didn't enter any thing, start at 1
+	} else if (is.numeric(num)){
+		num = num
+	} else if (!is.numeric(num)){
+		loop = FALSE
+		launch = FALSE
+		cat("Invalid number. Aborting\n")
+	}
+	
 	# This while loop will repeat continuously to launch multiple iButtons.
 	# The same parameters will be used to launch every iButton, except that the 
 	# start delay (if >0) will automatically adjust as time elapses so that each
