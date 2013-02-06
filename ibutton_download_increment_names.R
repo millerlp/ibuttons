@@ -42,6 +42,7 @@
 setwd('D:/R/ibuttons') # A copy of thermodl.exe should be in this directory
 
 cur.date = Sys.Date() # Get current date
+cur.date = gsub("-","",cur.date) # Remove dashes from date
 # Assemble a directory name to store downloaded data into
 dir.name = paste('.\\',as.character(cur.date), '_raw_downloads',sep = '')
 # Assemble a directory name to store the parsed csv output files in
@@ -73,7 +74,7 @@ while(loop) {
 	cat('Current file number: ', fnameID, '\n') # Show current number
 	Sys.sleep(1) # pause for 1 second
 	# Get current time to insert in filename so we don't overwrite old data
-	currTime = strftime(Sys.time(), format = "%Y%m%d_%H%M")
+	currTime = strftime(Sys.time(), format = "%Y%m%d_%H%M%S")
 	# Assemble filename
 	fname = paste(dir.name,'\\',fnameID,'_',currTime,'.dat', sep = '')
 	# Call the thermodl.exe program provided by Maxim. This must be in the 
