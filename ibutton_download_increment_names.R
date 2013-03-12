@@ -2,6 +2,23 @@
 # 
 # Author: Luke Miller  Dec 28, 2012
 ###############################################################################
+## *********NOTE: DAYLIGHT SAVINGS TIME WILL SCREW YOU OVER***************
+#	If your ibuttons are running during a daylight savings time transition
+# (i.e. 2013-03-10 02:00 -> 03:00), you need to carefully specify what timezone
+# R should be using. For example, in the Pacific Timezone (America/Los_Angeles)
+# you must set Sys.setenv(TZ = 'Etc/GMT+8') before running this script 
+# with ibuttons that ran during a daylight savings time transition, otherwise
+# R will lose an hour's worth of data during the csv file generation below. Any
+# operation that relies on POSIX time values will be affected by daylight 
+# savings time unless you manually specify a timezone value that doesn't have
+# a daylight savings time adjustment, such as any variation of Etc/GMT+8, where
+# the +8 is the offset from UTC. So the US east coast would be Etc/GMT+5, and
+# Paris, France would be Etc/GMT-1. You probably think those + and - values 
+# should be the other way around, but just trust me that R uses this weird 
+# convention.
+Sys.setenv(TZ = 'Etc/GMT+8') # Eliminate daylight savings time adjustments
+cat('System timezone is set to', Sys.timezone(),'\n')
+
 # This script will allow the user to download iButtons, giving a numeric name
 # to each file that increments with each new download. It will parse the raw 
 # data file and extract the useful bits (to me at least): date/time, temperature
