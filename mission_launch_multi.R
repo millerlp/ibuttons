@@ -9,6 +9,9 @@
 setwd('D:/R/ibuttons') # Alter this for your needs, thermoms.exe must be in the
 # current R working directory.
 
+# Make sure R environment matches current system's time zone. 
+Sys.setenv(TZ="")
+
 # The thermoms.exe file was originally downloaded as part of the Maxim iButton 
 # 1-Wire Public Domain Kit. 
 # There are several versions of the Kit available, including

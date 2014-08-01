@@ -10,6 +10,9 @@
 setwd('D:/R/ibuttons') # Alter this for your needs, thermoms.exe must be in the
 # current R working directory.
 
+# Make sure R environment matches current system's time zone. 
+Sys.setenv(TZ="")
+
 mem.length = 2048 # Number of data points the ibutton can hold. This is just 
 # used to calculate when the last sample will be taken, so you can write it 
 # down somewhere. 
