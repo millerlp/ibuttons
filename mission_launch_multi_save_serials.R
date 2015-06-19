@@ -129,7 +129,7 @@ if (launch) { # only do this part if launch == TRUE
 	# output file, in order of launching. 
 	while (loop) {
 		
-		if (time.delay != '0') {
+		if (as.character(time.delay) != '0') {
 			curr.time = as.POSIXct(Sys.time()) # Get current time
 			# Calculate difference between current time and time.delay value
 			time.diff = as.numeric(time.delay) - as.numeric(curr.time)

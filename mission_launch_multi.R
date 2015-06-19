@@ -96,7 +96,7 @@ if (launch) { # only do this part if launch == TRUE
 	# iButton will start at the same absolute time. 
 	while (loop) {
 		
-		if (time.delay != '0') {
+		if (as.character(time.delay) != '0') {
 			curr.time = as.POSIXct(Sys.time()) # Get current time
 			# Calculate difference between current time and time.delay value
 			time.diff = as.numeric(time.delay) - as.numeric(curr.time)
@@ -117,7 +117,7 @@ if (launch) { # only do this part if launch == TRUE
 			}
 			time.diff = as.character(time.diff) # convert to character	
 		} else { # time.delay was originally set to 0, so keep that.
-			time.diff == '0'
+			time.diff = '0'
 		}
 		cat('Calculated delay: ', time.diff, ' minutes\n')
 # The thermoms.exe program expects a series of inputs in order to establish the
